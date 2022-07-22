@@ -4,6 +4,11 @@ TTS Engine Tests
 (c) 2022 Jonathan Reus
 
 pyttsx3 docs at: https://pyttsx3.readthedocs.io/en/latest/
+
+Notes to self:
+I've tried pyttsx3 and multiple espeak-ng python wrappers, all of them
+have strange bugs associated with them using the latest python, so the easiest
+solution is to run the `espeak` command line utility directly to generate TTS audio.
 """
 
 import pyttsx3

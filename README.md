@@ -1,5 +1,8 @@
 # Robot Opera Voice Tool
 
+run using `python robop.py`
+
+
 # Dependencies
 
 Make sure `espeak` libraries are installed using `apt`.
@@ -7,6 +10,9 @@ e.g.
 ```
 sudo apt-get update
 sudo apt-get install espeak-ng
+
+(( optional - install more mbrola voices ))
+sudo apt-get install mbrola-*
 ```
 
 ```

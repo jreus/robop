@@ -50,12 +50,12 @@ class Robop:
 
         self.run_repl = True
         self.fidx = 0
-        self.speed = 175 # speed in words per minute, default is 175
-        self.gap = 10 # word gap in units of 10ms at default speed
-        self.pitch = 50 # pitch adjustment 0-99, default is 50
-        self.amp = 100 # amplitude up to 0-200, default is 100
-        self.voice = "mb/mb-us1"
-        self.model = "human"
+        self.speed = 100 # speed in words per minute, espeak default is 175
+        self.gap = 1 # word gap in units of 10ms at default speed
+        self.pitch = 70 # pitch adjustment 0-99, espeak default is 50
+        self.amp = 200 # amplitude up to 0-200, espeak default is 100
+        self.voice = "us-mbrola-1"
+        self.model = "humanmachine"
         self.playraw = False
         self.playrave = True
 
@@ -143,15 +143,16 @@ class Robop:
             example:
             set pitch=80 amp=100 gap=1 speed=70 model=human
 
+        Settable Parameters:
 
-        speed=175        # speed in words per minute, default is 175
-        gap=10           # word gap in units of 10ms at default speed
-        pitch=50         # pitch adjustment 0-99, default is 50
-        amp=100          # amplitude up to 0-200, default is 100
-        voice=gmw/en     # an espeak voice
-        model=human      # RAVE model - human, machine, humanmachine
-        playraw=True     # Play raw TTS audio
-        playrave=False   # Play RAVE audio
+        speed=100           # speed in words per minute: default is 175
+        gap=10              # word gap in units of 10ms at default speed: default is 10
+        pitch=70            # pitch: 0-99, default is 50
+        amp=170             # amplitude: 0-200, default is 100
+        voice=mb/mb-pl1     # an espeak voice (see 'voices')
+        model=human         # RAVE model: 'human' 'machine' or 'humanmachine'
+        playraw=True        # Play raw TTS audio: 'True' or 'False'
+        playrave=False      # Play RAVE audio: 'True' or 'False'
         """
         print(helpmsg)
 
@@ -193,7 +194,7 @@ class Robop:
                         exec(f"robo.{param} = '{val}'")
                         print(f"Set{cmd[0]}")
                     elif param in ["playraw", "playrave"]:
-                        val = bool(val)
+                        val = str(val)
                         exec(f"robo.{param} = {val}")
                         print(f"Set{cmd[0]}")
                     else:
