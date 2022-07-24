@@ -1,17 +1,68 @@
-# Robot Opera Voice Tool
+# Robot Opera TTS to RAVE Tool
 
-run using `python robop.py`
+run using `python tts-rave.py`
+
+Note: Because the tts-rave.py tool runs non-realtime, your audio settings don't matter.
+Normally realtime RAVE clients (PureData, SuperCollider, VST, etc..) must always be run with audio settings of 48000khz / 2048 block size
+
+# ENVIRONMENT SETUP (Tested on Ubuntu 20.04)
+
+The TTS-RAVE tool was developed with a miniconda environment.
+Setting up conda is probably the easiest way to get it running.
+
+## Where to put RAVE models
+
+The TTS-RAVE tool is expecting to find each of the RAVE models in a directory called `models`
+in the parent directory of this repository. Your file structure should look something like this:
+
+Parent Directory
+- models
+  - human01rt
+    - 2M83.ckpt
+  - machine01rt
+    - 2M81.ckpt
+  - humanmachine01rt
+    - 4M1.ckpt
+    - 3M_nofinetuning.ckpt
+- robop (this repository!)
 
 
-# Dependencies
 
-Make sure `espeak` libraries are installed using `apt`.
+## The Short Way
+
+If you're using Ubuntu 20.04 like I am, then you might be able to get away with
+using the spec file for my conda setup to build your own python environment for running
+the TTS-RAVE tool. Note: I haven't tried this myself! I have only exported the spec file.
+
+To use the spec file to create an identical environment on the same machine or another machine:
+```
+conda create --name robop --file conda_setup_spec.txt
+```
+
+To use the spec file to install its listed packages into an existing environment:
+```
+conda install --name myenv --file conda_setup_spec.txt
+```
+
+Conda does not check architecture or dependencies when installing from a spec file. To ensure that the packages work correctly, make sure that the file was created from a working environment, and use it on the same architecture, operating system, and platform.
+
+
+
+## The Long Way (probably what you will need to do)
+The long way for setting up your environment is to install all the dependencies
+manually so that they are sure to work on your system configuration.
+
+First make sure conda (anaconda or miniconda) is installed on your system.
+
+You will also need to install `espeak` - the open source TTS project.
+
+On Ubuntu Linux this is easy to do by using `apt-get`.
 e.g.
 ```
 sudo apt-get update
 sudo apt-get install espeak-ng
 
-(( optional - install more mbrola voices ))
+(( optional but recommended - install more mbrola voices ))
 sudo apt-get install mbrola-*
 ```
 

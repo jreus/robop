@@ -1,36 +1,39 @@
-#N canvas 4 81 1489 958 12;
-#X obj 104 310 dac~;
-#X obj 105 274 *~ 1;
+#N canvas 2117 91 1489 958 12;
+#X obj 104 345 dac~;
+#X obj 105 309 *~ 1;
 #X obj 204 314 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
--262144 -1 -1 0.636364 256;
+-262144 -1 -1 0.616162 256;
 #X obj 184 154 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
--262144 -1 -1 0.944973 256;
+-262144 -1 -1 20 256;
 #X obj 207 282 hsl 100 30 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 12700 1;
+-1 -1 6100 1;
 #X text 203 263 output level;
 #X text 422 276 Change the first argument of nn~ to the full path to
 your rave model;
-#X obj 105 199 nn~ /home/jon/Drive/ROBOP/models/human01rt/human01rt_combined_2M83.ts
-prior, f 85;
-#X obj 105 237 nn~ /home/jon/Drive/ROBOP/models/human01rt/human01rt_combined_2M83.ts
-decode, f 85;
 #X text 101 95 temperature;
 #X obj 105 152 sig~;
 #X obj 108 118 hsl 128 30 0.01 20 1 0 empty empty empty -2 -8 0 10
--262144 -1 -1 15300 1;
+-262144 -1 -1 12700 1;
+#X obj 105 199 nn~ /home/jon/Drive/ROBOP/models/human01rt/human01rt_2M83_combined.ts
+prior, f 85;
+#X obj 105 237 nn~ /home/jon/Drive/ROBOP/models/human01rt/human01rt_2M83_combined.ts
+decode, f 85;
+#X text 270 114 temperature controls the "variation" within the prior
+signals - a higher temperature will create more of the less common
+sound material in the dataset;
 #X connect 1 0 0 0;
 #X connect 1 0 0 1;
 #X connect 4 0 1 1;
 #X connect 4 0 2 0;
-#X connect 7 0 8 0;
-#X connect 7 1 8 1;
-#X connect 7 2 8 2;
-#X connect 7 3 8 3;
-#X connect 7 4 8 4;
-#X connect 7 5 8 5;
-#X connect 7 6 8 6;
-#X connect 7 7 8 7;
-#X connect 8 0 1 0;
-#X connect 10 0 7 0;
-#X connect 11 0 10 0;
-#X connect 11 0 3 0;
+#X connect 8 0 10 0;
+#X connect 9 0 8 0;
+#X connect 9 0 3 0;
+#X connect 10 0 11 0;
+#X connect 10 1 11 1;
+#X connect 10 2 11 2;
+#X connect 10 3 11 3;
+#X connect 10 4 11 4;
+#X connect 10 5 11 5;
+#X connect 10 6 11 6;
+#X connect 10 7 11 7;
+#X connect 11 0 1 0;

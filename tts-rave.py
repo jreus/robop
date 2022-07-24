@@ -150,7 +150,7 @@ class Robop:
         pitch=70            # pitch: 0-99, default is 50
         amp=170             # amplitude: 0-200, default is 100
         voice=mb/mb-pl1     # an espeak voice (see 'voices')
-        model=human         # RAVE model: 'human' 'machine' or 'humanmachine'
+        model=human         # RAVE model: 'human' 'machine' 'humanmachine' or 'humanmachine_noft'
         playraw=True        # Play raw TTS audio: 'True' or 'False'
         playrave=False      # Play RAVE audio: 'True' or 'False'
         """
@@ -306,6 +306,11 @@ if __name__ == '__main__':
             ],
             "humanmachine": [
                 "humanmachine01rt/4M1.ckpt",
+                48000,
+                0,
+            ],
+            "humanmachine_noft": [
+                "humanmachine01rt/3M_nofinetuning.ckpt",
                 48000,
                 0,
             ],

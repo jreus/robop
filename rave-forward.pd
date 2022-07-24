@@ -1,27 +1,27 @@
-#N canvas 4 81 1489 958 12;
+#N canvas 2190 93 1489 958 12;
 #X obj 104 310 dac~;
 #X obj 105 274 *~ 1;
 #X obj 204 314 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
--262144 -1 -1 0.636364 256;
+-262144 -1 -1 0.434343 256;
 #X obj 165 89 vsl 50 70 50 1000 1 0 empty empty empty 0 -9 0 10 -262144
--1 -1 7400 1;
+-1 -1 4100 1;
 #X obj 165 167 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
--262144 -1 -1 249.243 256;
+-262144 -1 -1 296.514 256;
 #X obj 224 145 osc~ 440;
 #X obj 447 169 lop~;
 #X obj 108 90 vsl 50 70 0 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 2800 1;
+-1 -1 3600 1;
 #X obj 108 167 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
--262144 -1 -1 0.202899 256;
+-262144 -1 -1 0.521739 256;
 #X obj 224 172 *~;
 #X obj 381 90 vsl 50 70 20 18000 1 0 empty empty empty 0 -9 0 10 -262144
--1 -1 1700 1;
+-1 -1 2600 1;
 #X obj 381 168 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
--262144 -1 -1 44.0099 256;
+-262144 -1 -1 259.551 256;
 #X obj 312 91 vsl 50 70 0 1 0 0 empty empty empty 0 -9 0 10 -262144
--1 -1 11900 1;
+-1 -1 2200 1;
 #X obj 312 168 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
--262144 -1 -1 0.855072 256;
+-262144 -1 -1 0.318841 256;
 #X obj 447 198 *~;
 #X obj 447 143 noise~;
 #X text 379 180 cutoff;
@@ -30,13 +30,13 @@
 #X text 308 180 level;
 #X text 104 179 level;
 #X text 163 179 f0;
-#X obj 207 282 hsl 100 30 0 1 0 0 empty empty empty -2 -8 0 10 -262144
--1 -1 12700 1;
+#X obj 209 280 hsl 100 30 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 4300 1;
 #X text 203 263 output level;
-#X obj 105 237 nn~ /home/jon/Drive/ROBOP/models/human01rt/human01rt_vae_2M83_cached.ts
-forward, f 85;
 #X text 422 276 Change the first argument of nn~ to the full path to
 your rave model;
+#X obj 105 237 nn~ /home/jon/Drive/ROBOP/models/human01rt/human01rt_2M83_combined.ts
+forward, f 85;
 #X connect 1 0 0 0;
 #X connect 1 0 0 1;
 #X connect 3 0 4 0;
@@ -45,13 +45,13 @@ your rave model;
 #X connect 6 0 14 0;
 #X connect 7 0 8 0;
 #X connect 7 0 9 1;
-#X connect 9 0 24 0;
+#X connect 9 0 25 0;
 #X connect 10 0 11 0;
 #X connect 10 0 6 1;
 #X connect 12 0 13 0;
 #X connect 12 0 14 1;
-#X connect 14 0 24 0;
+#X connect 14 0 25 0;
 #X connect 15 0 6 0;
 #X connect 22 0 1 1;
 #X connect 22 0 2 0;
-#X connect 24 0 1 0;
+#X connect 25 0 1 0;
