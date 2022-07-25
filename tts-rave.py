@@ -49,12 +49,14 @@ class Robop:
         self.log = logger
 
         self.run_repl = True
+        self.prompt_str = "👄"
         self.fidx = 0
         self.speed = 100 # speed in words per minute, espeak default is 175
         self.gap = 1 # word gap in units of 10ms at default speed
         self.pitch = 70 # pitch adjustment 0-99, espeak default is 50
         self.amp = 200 # amplitude up to 0-200, espeak default is 100
         self.voice = "us-mbrola-1"
+        self.voices = ["us-mbrola-1", "mb/mb-de1-en", "mb/mb-fr1-en", "mb/mb-hu1/en", "mb/mb-sw2-en"]
         self.model = "humanmachine"
         self.playraw = False
         self.playrave = True
@@ -179,7 +181,7 @@ class Robop:
                 os.system(f'espeak --voices={lang}')
             input = None
         elif input[:3] == 'set':
-            rx = re.compile(r'( ([a-z]+)\=([A-Za-z\\\-0-9]+))')
+            rx = re.compile(r'( ([a-z]+)\=([A-Za-z\\\0-9\-]+))')
             m = rx.findall(input)
             if len(m) > 0:
                 for cmd in m:
@@ -237,7 +239,7 @@ class Robop:
         print(f"Type help for help")
         while self.run_repl:
             try:
-                recv = input('> ')
+                recv = input(f'{self.prompt_str} ')
                 self.log.debug(f"Got:{recv}")
                 text = self.process_commands(recv)
                 if text is not None:

@@ -5,6 +5,45 @@ run using `python tts-rave.py`
 Note: Because the tts-rave.py tool runs non-realtime, your audio settings don't matter.
 Normally realtime RAVE clients (PureData, SuperCollider, VST, etc..) must always be run with audio settings of 48000khz / 2048 block size
 
+## Usage
+A prompt will appear once the app has loaded, anything you type will be synthesized via espeak into a wav file and then processed through the currently selected rave model. A few special commands are provided which will not be spoken:
+
+help        show the app help text
+quit        quit the app
+voices      list all available espeak voices on your system
+voices=en   list all espeak voices for a given language (in this case 'en')
+set         set the value of one or more synthesis parameters
+
+The available parameters are:
+
+speed=100           # speed in words per minute: default is 175
+gap=10              # word gap in units of 10ms at default speed: default is 10
+pitch=70            # pitch: 0-99, default is 50
+amp=170             # amplitude: 0-200, default is 100
+voice=mb/mb-pl1     # an espeak voice (see 'voices')
+model=human         # RAVE model: 'human' 'machine' 'humanmachine' or 'humanmachine_noft'
+playraw=True        # Play raw TTS audio: 'True' or 'False'
+playrave=False      # Play RAVE audio: 'True' or 'False'
+
+Example commands:
+
+List all English espeak voices
+> voices=en
+
+Change the current RAVE model to humanmachine_noft
+> set model=humanmachine_noft
+
+Play only the TTS voice and not the RAVE voice
+> set playraw=True playrave=False
+
+Set the pitch, amplitude, word gap, and speed of the espeak voice.
+> set pitch=80 amp=100 gap=1 speed=70 model=human
+
+Change the espeak voice to Polish
+> set voice=mb/mb-pl1
+
+
+
 # ENVIRONMENT SETUP (Tested on Ubuntu 20.04)
 
 The TTS-RAVE tool was developed with a miniconda environment.
