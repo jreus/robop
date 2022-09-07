@@ -8,6 +8,7 @@ Normally realtime RAVE clients (PureData, SuperCollider, VST, etc..) must always
 ## Usage
 A prompt will appear once the app has loaded, anything you type will be synthesized via espeak into a wav file and then processed through the currently selected rave model. A few special commands are provided which will not be spoken:
 
+```
 help        show the app help text
 
 quit        quit the app
@@ -17,10 +18,11 @@ voices      list all available espeak voices on your system
 voices=en   list all espeak voices for a given language (in this case 'en')
 
 set         set the value of one or more synthesis parameters
-
+```
 
 The available parameters are:
 
+```
 speed=100           speed in words per minute: default is 175
 
 gap=10              word gap in units of 10ms at default speed: default is 10
@@ -36,7 +38,7 @@ model=human         RAVE model: 'human' 'machine' 'humanmachine' or 'humanmachin
 playraw=True        Play raw TTS audio: 'True' or 'False'
 
 playrave=False      Play RAVE audio: 'True' or 'False'
-
+```
 
 Example commands:
 
@@ -67,17 +69,18 @@ Setting up conda is probably the easiest way to get it running.
 The TTS-RAVE tool is expecting to find each of the RAVE models in a directory called `models`
 in the parent directory of this repository. Your file structure should look something like this:
 
-Parent Directory
-- models
-  - human01rt
+```
+Parent Directory/
+  models/
+    human01rt/
     - 2M83.ckpt
-  - machine01rt
+    machine01rt/
     - 2M81.ckpt
-  - humanmachine01rt
+    humanmachine01rt/
     - 4M1.ckpt
     - 3M_nofinetuning.ckpt
-- robop (this repository!)
-
+  robop/ (this repository!)
+```
 
 
 ## The Short Way
