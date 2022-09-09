@@ -140,7 +140,7 @@ conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch -c cond
 Install other dependencies needed by RAVE and the TTS-RAVE tool.
 ```
 conda install scipy scikit-learn numpy matplotlib pyaudio
-conda install -c conda-forge librosa einops tqdm gputil pydub
+conda install -c conda-forge librosa einops tqdm gputil pydub python-sounddevice
 ```
 
 Get RAVE via git.
