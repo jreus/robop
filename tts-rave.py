@@ -13,6 +13,8 @@ import re
 import librosa
 import torch
 from rave import RAVE
+import sounddevice as sd
+
 torch.set_grad_enabled(False) # we're only doing inference
 
 
@@ -133,7 +135,7 @@ class Robop:
             soundfile.write(savepath, wav, sr)
             self.log.info(f"Wrote file: {savepath}")
             savepaths.append(savepath)
-        return savepaths
+        return savepaths, wav
 
     def print_help(self) -> None:
         helpmsg = """Enter text to speak.
@@ -225,12 +227,14 @@ class Robop:
                 play(wav)
 
         if self.playrave:
-            res = self.rave_generate(filepath, file_sr=48000, use_models=[self.model])
-            self.log.debug(res)
-            ravwav = pydub.AudioSegment.from_file(res[0], format="wav")
-            with silence_stdout():
-                play(ravwav)
-            result['rave_output'] = res
+            wavpath, wavdata = self.rave_generate(filepath, file_sr=48000, use_models=[self.model])
+            self.log.debug(wavpath)
+            # ravwav = pydub.AudioSegment.from_file(res[0], format="wav")
+            # with silence_stdout():
+                # play(ravwav)
+            result['rave_output'] = wavpath
+            sd.play(wavdata)
+            sd.wait()
 
         return result
 
