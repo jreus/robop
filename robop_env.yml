@@ -1,0 +1,21 @@
+name: robop
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch
+  - torchaudio
+  - torchvision
+  - cudatoolkit=11.6
+  - numpy
+  - scikit-learn
+  - matplotlib
+  - scipy
+  - gputil
+  - librosa
+  - tqdm
+  - einops
+  - ipython
+  - pyaudio
+  - python-sounddevice
+prefix: /home/jon/miniconda3/envs/robop

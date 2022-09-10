@@ -6,8 +6,8 @@ from logging import Logger
 from typing import List, Union, Any, Dict
 
 import soundfile
-import pydub
-from pydub.playback import play
+# import pydub
+# from pydub.playback import play
 from time import sleep
 import re
 import librosa
@@ -45,11 +45,11 @@ class silence_stdout:
 
 
 class Robop:
-    def __init__(self, audio_write_path: str, use_cuda: bool, logger: Logger) -> None:
+    def __init__(self, audio_write_path: str, use_cuda: bool, logger: Logger, sample_rate: int) -> None:
         self.audio_write_path = Path(audio_write_path)
         self.use_cuda = use_cuda
         self.log = logger
-
+        self.sample_rate = sample_rate
         self.run_repl = True
         self.prompt_str = "👄"
         self.fidx = 0
@@ -62,6 +62,7 @@ class Robop:
         self.model = "humanmachine"
         self.playraw = False
         self.playrave = True
+        self.debug = False # enable debugging output
 
         # Create audio write dir if does not exist...
         if self.audio_write_path.suffix != '':
@@ -98,7 +99,7 @@ class Robop:
             self.rave[modelname]["sr"] = model_sr
 
             # Load model
-            self.log.info(f"LOADING MODEL at {spec}")
+            self.log.info(f"Loading RAVE model {spec}")
             if realtime:
                 self.rave[modelname]['model'] = torch.jit.load(model_path).eval()
             else:
@@ -117,6 +118,7 @@ class Robop:
 
         x = torch.from_numpy(x).reshape(1,1,-1).float()
         savepaths = []
+        wavs = []
 
         if use_models is None:
             use_models = self.rave.keys()
@@ -133,9 +135,10 @@ class Robop:
                 wav[-remove_samples:] = 0.0 # silence end of signal..
             savepath = os.path.abspath(os.path.join(self.audio_write_path, f"{filepath.stem}_rave_{modelname}.wav"))
             soundfile.write(savepath, wav, sr)
-            self.log.info(f"Wrote file: {savepath}")
             savepaths.append(savepath)
-        return savepaths, wav
+            wavs.append(wav)
+
+        return savepaths, wavs
 
     def print_help(self) -> None:
         helpmsg = """Enter text to speak.
@@ -157,6 +160,7 @@ class Robop:
         model=human         # RAVE model: 'human' 'machine' 'humanmachine' or 'humanmachine_noft'
         playraw=True        # Play raw TTS audio: 'True' or 'False'
         playrave=False      # Play RAVE audio: 'True' or 'False'
+        debug=True          # Print debugging messages: 'True' or 'False'
         """
         print(helpmsg)
 
@@ -167,47 +171,67 @@ class Robop:
         Returns a string with all commands removed, or none if only whitespace remains.
         """
 
-        if input == 'help':
-            self.print_help()
-            input = None
-        elif input == 'quit' or input == 'exit':
-            self.run_repl = False
-            input = None
-        elif input[:6] == 'voices':
-            rx = re.compile(r'voices\=([A-Za-z\\\-0-9]+)')
-            m = rx.search(input)
-            if m is None:
-                os.system('espeak --voices')
-            else:
-                lang = str(m.group(1))
-                os.system(f'espeak --voices={lang}')
-            input = None
-        elif input[:3] == 'set':
-            rx = re.compile(r'( ([a-z]+)\=([A-Za-z\\\0-9\-]+))')
-            m = rx.findall(input)
-            if len(m) > 0:
-                for cmd in m:
-                    param = str(cmd[1])
-                    val = cmd[2]
-                    if param in ['speed', 'pitch', 'amp', 'gap']:
-                        val = int(val)
-                        exec(f"robo.{param} = {val}")
-                        print(f"Set{cmd[0]}")
-                    elif param in ["model", "voice"]:
-                        val = str(val)
-                        exec(f"robo.{param} = '{val}'")
-                        print(f"Set{cmd[0]}")
-                    elif param in ["playraw", "playrave"]:
-                        val = str(val)
-                        exec(f"robo.{param} = {val}")
-                        print(f"Set{cmd[0]}")
-                    else:
-                        exec(f"Error: Undefined parameter '{param}'")
-            else:
-                print(f"Error: set must be followed by a series of parameter value assignments.")
+        try:
+            if input == 'help':
+                self.print_help()
+                input = None
+            elif input == 'quit' or input == 'exit':
+                self.run_repl = False
+                input = None
+            elif input[:6] == 'voices':
+                rx = re.compile(r'voices\=([A-Za-z\\\-0-9]+)')
+                m = rx.search(input)
+                if m is None:
+                    os.system('espeak --voices')
+                else:
+                    lang = str(m.group(1))
+                    os.system(f'espeak --voices={lang}')
+                input = None
+            elif input[:3] == 'set':
+                rx = re.compile(r'( ([a-z]+)\=([A-Za-z\\0-9\-]+))')
+                m = rx.findall(input)
+                self.log.debug(f"Matched parameters: {m}")
+                if len(m) > 0:
+                    for cmd in m:
+                        param = str(cmd[1])
+                        val = cmd[2]
+                        if param in ['speed', 'pitch', 'amp', 'gap']:
+                            val = int(val)
+                            exec(f"robo.{param} = {val}")
+                            print(f"Set{cmd[0]}")
+                        elif param in ["model", "voice"]:
+                            val = str(val)
+                            exec(f"robo.{param} = '{val}'")
+                            print(f"Set{cmd[0]}")
+                        elif param in ["playraw", "playrave"]:
+                            val = str(val).capitalize()
+                            exec(f"robo.{param} = {val}")
+                            print(f"Set{cmd[0]}")
+                        elif param == "debug":
+                            val = str(val).capitalize()
+                            exec(f"robo.{param} = {val}")
+                            print(f"Set{cmd[0]}")
+                            self.set_debug(self.debug)
+                        else:
+                            print(f"Error: Unknown parameter '{param}'")
+                else:
+                    print(f"Error: set must be followed by a series of parameter value assignments.")
+
+                input = None
+
+        except Exception as ex:
+            print(f"{type(ex)}: {ex}")
             input = None
 
         return input
+
+    def set_debug(self, debug: bool) -> None:
+        if debug:
+            level = logging.DEBUG
+        else:
+            level = logging.INFO
+
+        self.log.setLevel(level)
 
     def generate_voice(self, text: str) -> None:
         result = {"text": text, "msg": 'generated_wavset'}
@@ -215,36 +239,39 @@ class Robop:
         filename = f'tts_raw{self.fidx}.wav'
         filepath = os.path.join(self.audio_write_path, filename)
         cmd = f'espeak -s {self.speed} -g {self.gap} -p {self.pitch} -a {self.amp} -v {self.voice} -w "{filepath}" "{text}"'
-        self.log.debug("RUN:"+cmd)
+        self.log.debug(f"Command > {cmd}")
         os.system(cmd)
         sleep(0.1)
+        self.log.debug(f"Wrote espeak output: {filepath}")
         result['filepath']=filepath
         self.fidx += 1
 
         if self.playraw:
-            wav = pydub.AudioSegment.from_file(filepath, format="wav")
-            with silence_stdout():
-                play(wav)
+            x, sr = librosa.load(filepath, sr=self.sample_rate)
+            sd.play(x, samplerate=self.sample_rate)
+            sd.wait()
+            # wav = pydub.AudioSegment.from_file(filepath, format="wav")
+            # with silence_stdout():
+            #     play(wav)
 
         if self.playrave:
-            wavpath, wavdata = self.rave_generate(filepath, file_sr=48000, use_models=[self.model])
-            self.log.debug(wavpath)
+            wavpaths, wavdatas = self.rave_generate(filepath, file_sr=self.sample_rate, use_models=[self.model])
+            self.log.debug(f"Wrote rave output: {wavpaths[0]}")
             # ravwav = pydub.AudioSegment.from_file(res[0], format="wav")
             # with silence_stdout():
                 # play(ravwav)
-            result['rave_output'] = wavpath
-            sd.play(wavdata)
+            result['rave_output'] = wavpaths
+            sd.play(wavdatas[0], samplerate=self.sample_rate)
             sd.wait()
 
         return result
 
 
-    def run_chat_repl(self):
+    def run_chat_repl(self) -> None:
         print(f"Type help for help")
         while self.run_repl:
             try:
                 recv = input(f'{self.prompt_str} ')
-                self.log.debug(f"Got:{recv}")
                 text = self.process_commands(recv)
                 if text is not None:
                     self.generate_voice(text)
@@ -262,6 +289,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="""ROBOP Voice Synthesizer\n\n""",
         formatter_class=RawTextHelpFormatter,
+    )
+
+    parser.add_argument(
+        "--sample_rate", "-s",
+        type=int,
+        default="48000",
+        help="Playback sample rate (ideally should match your system)",
     )
 
     parser.add_argument(
@@ -284,17 +318,23 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     audio_write_path = Path(args.temp_path).absolute()
+    sample_rate = args.sample_rate
     use_cuda = args.use_cuda
     log_level = eval(f"logging.{args.debug_level}")
     logging.basicConfig(level=logging.WARNING)
     log = logging.getLogger('ROBOP')
     log.propagate = False
+    console = logging.StreamHandler()
+    formatter = logging.Formatter("%(levelname)s > %(message)s")
+    console.setFormatter(formatter)
+    log.addHandler(console)
     log.setLevel(log_level)
 
     robo = Robop(
         audio_write_path,
         use_cuda,
-        logger=log
+        logger=log,
+        sample_rate=sample_rate
     )
 
     model_specs = {
